@@ -50,16 +50,15 @@ module Loggr
   class FluentEvent
 
     def initialize(callback=nil)
-	  @callback = callback
+      @callback = callback
       @event = Event.new()
     end
 
     def post(async=true)
-	  if !@callback.nil?
-	    @callback.call(self)
-	  end
-      client = LogClient.new()
-      client.post(@event, async)
+      if !@callback.nil?
+        @callback.call(self)
+      end
+      LogClient.post(@event,async)
     end
 
     def text(text)

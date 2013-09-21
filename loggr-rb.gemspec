@@ -14,4 +14,5 @@ Gem::Specification.new do |gem|
   gem.executables << 'loggr'
   gem.requirements << ""
   gem.add_dependency 'rack'
+  gem.add_dependency 'sucker_punch'
 end
