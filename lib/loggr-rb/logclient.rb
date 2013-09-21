@@ -8,7 +8,7 @@ module Loggr
 
     def self.post(e,async)
       if async
-        LogJob.new.async.perform(e)
+        LogEventJob.new.async.perform(e)
       else
         LogClient.new.post(event)
       end
@@ -18,6 +18,24 @@ module Loggr
       logkey = ::Loggr::Config.log_key
       call_remote("post.loggr.net", "/1/logs/#{logkey}/events", create_params(e))
     end
+
+    def self.track_user(username,page = nil, async = true)
+      if async
+        TrackUserJob.new.async.perform(username,page)
+      else
+        LogClient.new.track_user(username,page)
+      end
+    end
+
+    def track_user(username,page = nil)
+      logkey = ::Loggr::Config.log_key
+      call_remote("post.loggr.net", "/1/logs/#{logkey}/users",{
+        "apikey" => Loggr::Config.api_key,
+        "username" => username,
+        "page" => page
+      })
+    end
+
 
     def create_params(e)
       apikey = ::Loggr::Config.api_key
@@ -51,7 +69,7 @@ module Loggr
 
   end
 
-  class LogJob
+  class LogEventJob
     include SuckerPunch::Job
 
     def perform(event)
@@ -59,5 +77,15 @@ module Loggr
     end
 
   end
+
+  class TrackUserJob
+    include SuckerPunch::Job
+
+    def perform(username,page)
+      LogClient.new.track_user(username,page)
+    end
+
+  end
+
 
 end
