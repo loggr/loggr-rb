@@ -10,7 +10,7 @@ module Loggr
       if async
         LogEventJob.new.async.perform(e)
       else
-        LogClient.new.post(event)
+        LogClient.new.post(e)
       end
     end
 
